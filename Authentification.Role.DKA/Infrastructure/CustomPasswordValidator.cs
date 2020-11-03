@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 
 namespace Authentification.Role.DKA.Infrastructure
 {
-    public class CustomPasswordValidator : IPasswordValidator<ApplicationUser>
+    public class CustomPasswordValidator : PasswordValidator<ApplicationUser>
     {
-        public Task<IdentityResult> ValidateAsync(UserManager<ApplicationUser> manager, ApplicationUser user, string password)
+        public override async Task<IdentityResult> ValidateAsync(UserManager<ApplicationUser> manager, ApplicationUser user, string password)
         {
-            List<IdentityError> errors = new List<IdentityError>();
+            IdentityResult result = await base.ValidateAsync(manager, user, password);
+            List<IdentityError> errors = result.Succeeded ?
+            new List<IdentityError>() : result.Errors.ToList();
 
             if (password.ToLower().Contains(user.UserName.ToLower()))
             {
