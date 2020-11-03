@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Authentification.Role.DKA.Models;
 using Microsoft.AspNetCore.Identity;
@@ -44,6 +45,28 @@ namespace Authentification.Role.DKA.Controllers
                 }
             }
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
+        {
+            ApplicationUser user = await UserMana.FindByIdAsync(id);
+            if(user != null)
+            {
+                IdentityResult result = await UserMana.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    AddErrorsFromResult(result);
+                }
+            } else
+            {
+                ModelState.AddModelError("", "Error Not Found");
+            }
+            return RedirectToAction("Index", UserMana.Users);
         }
     }
 }
