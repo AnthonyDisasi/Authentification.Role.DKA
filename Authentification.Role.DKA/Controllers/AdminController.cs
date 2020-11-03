@@ -120,7 +120,6 @@ namespace Authentification.Role.DKA.Controllers
                     if (validPass.Succeeded)
                     {
                         user.PasswordHash = passwordHasher.HashPassword(user, password);
-                        password);
                     }
                     else
                     {
