@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using Authentification.Role.DKA.Data;
+﻿using System.Threading.Tasks;
 using Authentification.Role.DKA.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Authentification.Role.DKA.Controllers
 {
@@ -26,6 +22,8 @@ namespace Authentification.Role.DKA.Controllers
             passwordValidator = passValid;
             passwordHasher = passwordHash;
         }
+
+        [Authorize]
         public ViewResult Index() => View(UserMana.Users);
 
         public ViewResult Create() => View();

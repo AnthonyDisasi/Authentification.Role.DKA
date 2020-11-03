@@ -45,7 +45,7 @@ namespace Authentification.Role.DKA
             services.AddIdentity<ApplicationUser, IdentityRole>(opts =>
             {
                 opts.User.RequireUniqueEmail = true;
-                //opts.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz";
+                //  opts.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz";
 
                 opts.Password.RequiredLength = 6;
                 opts.Password.RequireNonAlphanumeric = false;
