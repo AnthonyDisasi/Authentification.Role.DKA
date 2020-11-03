@@ -13,6 +13,8 @@ namespace Authentification.Role.DKA.Controllers
     {
         private UserManager<ApplicationUser> UserMana;
 
+        private IUserValidator<ApplicationUser> userValidator;
+
         public AdminController(UserManager<ApplicationUser> _UserMana)
         {
             UserMana = _UserMana;
@@ -90,6 +92,17 @@ namespace Authentification.Role.DKA.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Edit(string id, CreateModel model)
+        {
+            ApplicationUser user = await UserMana.FindByIdAsync(id);
 
+            if(user != null)
+            {
+                user.Email = model.Email;
+                user.Password
+                IdentityResult result = await UserMana.UpdateAsync(user);
+            }
+        }
     }
 }
