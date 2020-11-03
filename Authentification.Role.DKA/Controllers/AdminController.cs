@@ -68,5 +68,13 @@ namespace Authentification.Role.DKA.Controllers
             }
             return RedirectToAction("Index", UserMana.Users);
         }
+
+        private void AddErrorsFromResult(IdentityResult result)
+        {
+            foreach(IdentityError error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+        }
     }
 }
