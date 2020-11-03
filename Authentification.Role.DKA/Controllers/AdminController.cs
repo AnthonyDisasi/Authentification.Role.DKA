@@ -108,8 +108,7 @@ namespace Authentification.Role.DKA.Controllers
             if (user != null)
             {
                 user.Email = email;
-                IdentityResult validEmail
-                = await userValidator.ValidateAsync(UserMana, user);
+                IdentityResult validEmail = await userValidator.ValidateAsync(UserMana, user);
                 if (!validEmail.Succeeded)
                 {
                     AddErrorsFromResult(validEmail);
@@ -120,8 +119,8 @@ namespace Authentification.Role.DKA.Controllers
                     validPass = await passwordValidator.ValidateAsync(UserMana, user, password);
                     if (validPass.Succeeded)
                     {
-                        user.PasswordHash = passwordHasher.HashPassword(user,
-                       password);
+                        user.PasswordHash = passwordHasher.HashPassword(user, password);
+                        password);
                     }
                     else
                     {
