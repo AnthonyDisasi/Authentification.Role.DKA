@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Authentification.Role.DKA.Data;
@@ -20,9 +21,13 @@ namespace Authentification.Role.DKA
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public  Startup()
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -75,8 +80,8 @@ namespace Authentification.Role.DKA
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
+
             app.UseAuthentication();
-            ApplicationContext.CreateAdminAccount(app.ApplicationServices, Configuration).Wait();
 
             app.UseMvc(routes =>
             {
