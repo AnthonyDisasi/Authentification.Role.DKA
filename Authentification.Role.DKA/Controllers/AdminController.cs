@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Authentification.Role.DKA.Data;
 using Authentification.Role.DKA.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,12 +13,18 @@ namespace Authentification.Role.DKA.Controllers
     public class AdminController : Controller
     {
         private UserManager<ApplicationUser> UserMana;
-
         private IUserValidator<ApplicationUser> userValidator;
-
-        public AdminController(UserManager<ApplicationUser> _UserMana)
+        private IPasswordValidator<ApplicationUser> passwordValidator;
+        private IPasswordHasher<ApplicationUser> passwordHasher;
+        public AdminController(UserManager<ApplicationUser> usrMgr,
+        IUserValidator<ApplicationUser> userValid,
+        IPasswordValidator<ApplicationUser> passValid,
+        IPasswordHasher<ApplicationUser> passwordHash)
         {
-            UserMana = _UserMana;
+            UserMana = usrMgr;
+            userValidator = userValid;
+            passwordValidator = passValid;
+            passwordHasher = passwordHash;
         }
         public ViewResult Index() => View(UserMana.Users);
 
@@ -26,7 +33,7 @@ namespace Authentification.Role.DKA.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateModel model)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 ApplicationUser user = new ApplicationUser
                 {
@@ -38,9 +45,10 @@ namespace Authentification.Role.DKA.Controllers
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index");
-                } else
+                }
+                else
                 {
-                    foreach(IdentityError error in result.Errors)
+                    foreach (IdentityError error in result.Errors)
                     {
                         ModelState.AddModelError("", error.Description);
                     }
@@ -53,7 +61,7 @@ namespace Authentification.Role.DKA.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             ApplicationUser user = await UserMana.FindByIdAsync(id);
-            if(user != null)
+            if (user != null)
             {
                 IdentityResult result = await UserMana.DeleteAsync(user);
                 if (result.Succeeded)
@@ -64,7 +72,8 @@ namespace Authentification.Role.DKA.Controllers
                 {
                     AddErrorsFromResult(result);
                 }
-            } else
+            }
+            else
             {
                 ModelState.AddModelError("", "Error Not Found");
             }
@@ -73,7 +82,7 @@ namespace Authentification.Role.DKA.Controllers
 
         private void AddErrorsFromResult(IdentityResult result)
         {
-            foreach(IdentityError error in result.Errors)
+            foreach (IdentityError error in result.Errors)
             {
                 ModelState.AddModelError("", error.Description);
             }
@@ -82,7 +91,7 @@ namespace Authentification.Role.DKA.Controllers
         public async Task<IActionResult> Edit(string id)
         {
             ApplicationUser user = await UserMana.FindByIdAsync(id);
-            if(user != null)
+            if (user != null)
             {
                 return View(user);
             }
@@ -93,16 +102,50 @@ namespace Authentification.Role.DKA.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(string id, CreateModel model)
+        public async Task<IActionResult> Edit(string id, string email, string password)
         {
             ApplicationUser user = await UserMana.FindByIdAsync(id);
-
-            if(user != null)
+            if (user != null)
             {
-                user.Email = model.Email;
-                user.Password
-                IdentityResult result = await UserMana.UpdateAsync(user);
+                user.Email = email;
+                IdentityResult validEmail
+                = await userValidator.ValidateAsync(UserMana, user);
+                if (!validEmail.Succeeded)
+                {
+                    AddErrorsFromResult(validEmail);
+                }
+                IdentityResult validPass = null;
+                if (!string.IsNullOrEmpty(password))
+                {
+                    validPass = await passwordValidator.ValidateAsync(UserMana, user, password);
+                    if (validPass.Succeeded)
+                    {
+                        user.PasswordHash = passwordHasher.HashPassword(user,
+                       password);
+                    }
+                    else
+                    {
+                        AddErrorsFromResult(validPass);
+                    }
+                }
+                if ((validEmail.Succeeded && validPass == null) || (validEmail.Succeeded && password != string.Empty && validPass.Succeeded))
+                {
+                    IdentityResult result = await UserMana.UpdateAsync(user);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        AddErrorsFromResult(result);
+                    }
+                }
             }
+            else
+            {
+                ModelState.AddModelError("", "User Not Found");
+            }
+            return View(user);
         }
     }
 }
