@@ -17,5 +17,9 @@ namespace Authentification.Role.DKA.Controllers
             UserMana = _UserMana;
         }
         public ViewResult Index() => View(UserMana.Users);
+
+        public ViewResult Create() => View();
+
+
     }
 }
