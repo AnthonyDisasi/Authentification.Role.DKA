@@ -1,5 +1,8 @@
 ﻿@model IEnumerable<ApplicationUser>
 <div class="bg-primary panel-body"><h4>User Accounts</h4></div>
+
+<div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
 <table class="table table-condensed table-bordered">
     <tr><th>ID</th><th>Name</th><th>Email</th></tr>
     @if (Model.Count() == 0)
