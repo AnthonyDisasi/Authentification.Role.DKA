@@ -20,4 +20,9 @@ namespace Authentification.Role.DKA.Models
         [PersonalData]
         public DateTime? Birthday { get; set; }
     }
+
+    public class ApplicationRole : IdentityRole
+    {
+
+    }
 }
