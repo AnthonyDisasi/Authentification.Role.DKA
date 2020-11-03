@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Authentification.Role.DKA.Data;
 using Authentification.Role.DKA.Infrastructure;
 using Authentification.Role.DKA.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -42,17 +43,16 @@ namespace Authentification.Role.DKA
 
             services.AddTransient<IUserValidator<ApplicationUser>, CustomUserValidator>();
 
-            services.AddIdentity<ApplicationUser, IdentityRole>(opts =>
-            {
+            services.AddIdentity<ApplicationUser, IdentityRole>(opts => {
                 opts.User.RequireUniqueEmail = true;
-                //  opts.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz";
-
+                //opts.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz";
                 opts.Password.RequiredLength = 6;
                 opts.Password.RequireNonAlphanumeric = false;
                 opts.Password.RequireLowercase = false;
                 opts.Password.RequireUppercase = false;
                 opts.Password.RequireDigit = false;
             }).AddEntityFrameworkStores<ApplicationContext>();
+
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -74,7 +74,9 @@ namespace Authentification.Role.DKA
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            app.UseIdentity();
+
+            app.UseAuthentication();
+            ApplicationContext.CreateAdminAccount(app.ApplicationServices, Configuration).Wait();
 
             app.UseMvc(routes =>
             {

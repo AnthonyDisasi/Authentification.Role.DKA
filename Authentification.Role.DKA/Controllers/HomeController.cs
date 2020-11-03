@@ -9,20 +9,22 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Authentification.Role.DKA.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Informaticien")]
     public class HomeController : Controller
     {
-        public ViewResult Index() => View(new Dictionary<string, object> { ["Placeholder"] = "Placehoder" });
-
-        public IActionResult Privacy()
+        [Authorize]
+        public IActionResult Index() => View(GetData(nameof(Index)));
+        [Authorize(Roles = "Users")]
+        public IActionResult OtherAction() => View("Index",
+        GetData(nameof(OtherAction)));
+        private Dictionary<string, object> GetData(string actionName) =>
+        new Dictionary<string, object>
         {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+            ["Action"] = actionName,
+            ["User"] = HttpContext.User.Identity.Name,
+            ["Authenticated"] = HttpContext.User.Identity.IsAuthenticated,
+            ["Auth Type"] = HttpContext.User.Identity.AuthenticationType,
+            ["In Users Role"] = HttpContext.User.IsInRole("Users")
+        };
     }
 }

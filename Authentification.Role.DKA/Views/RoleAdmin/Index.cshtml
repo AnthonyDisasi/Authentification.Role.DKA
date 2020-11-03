@@ -1,4 +1,4 @@
-﻿@model IEnumerable<IdentityRole>
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
 
 <div class="bg-primary panel-body"><h4>Roles</h4></div>
 <div class="text-danger" asp-validation-summary="ModelOnly"></div>
@@ -19,7 +19,8 @@
                 <td>
                     <form asp-action="Delete" asp-route-id="@role.Id" method="post">
                         <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@role.Id">Edit</a>
-                        <button type="submit" class="btn btn-sm btn-danger"> Delete</button>
+                        <button type="submit" class="btn btn-sm btn-danger">Delete
+                        </button>
                     </form>
                 </td>
             </tr>

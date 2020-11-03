@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace Authentification.Role.DKA.Controllers
 {
-    [Authorize]
     public class AccountController : Controller
     {
         private UserManager<ApplicationUser> userManager;
@@ -50,6 +49,11 @@ namespace Authentification.Role.DKA.Controllers
             
             return View(details);
         }
- 
+
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

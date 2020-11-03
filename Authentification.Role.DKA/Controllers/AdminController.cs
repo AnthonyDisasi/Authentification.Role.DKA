@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Authentification.Role.DKA.Controllers
 {
+    [Authorize(Roles = "Admins")]
     public class AdminController : Controller
     {
         private UserManager<ApplicationUser> UserMana;
@@ -23,7 +24,6 @@ namespace Authentification.Role.DKA.Controllers
             passwordHasher = passwordHash;
         }
 
-        [Authorize]
         public ViewResult Index() => View(UserMana.Users);
 
         public ViewResult Create() => View();

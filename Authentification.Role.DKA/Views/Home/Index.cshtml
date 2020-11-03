@@ -5,7 +5,7 @@
 </div>
 
 <table class="table table-condensed table-bordered">
-    @foreach(var kvp in Model)
+    @foreach (var kvp in Model)
     {
         <tr>
             <th>@kvp.Key</th>
@@ -13,3 +13,9 @@
         </tr>
     }
 </table>
+
+@if (User?.Identity?.IsAuthenticated ?? false)
+{
+    <a asp-controller="Account" asp-action="Logout"
+       class="btn btn-danger">Logout</a>
+}
