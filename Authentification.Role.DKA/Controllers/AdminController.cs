@@ -76,5 +76,20 @@ namespace Authentification.Role.DKA.Controllers
                 ModelState.AddModelError("", error.Description);
             }
         }
+
+        public async Task<IActionResult> Edit(string id)
+        {
+            ApplicationUser user = await UserMana.FindByIdAsync(id);
+            if(user != null)
+            {
+                return View(user);
+            }
+            else
+            {
+                return RedirectToAction("Index");
+            }
+        }
+
+
     }
 }
