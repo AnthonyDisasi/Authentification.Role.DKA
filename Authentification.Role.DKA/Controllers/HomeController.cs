@@ -10,10 +10,7 @@ namespace Authentification.Role.DKA.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+        public ViewResult Index() => View(new Dictionary<string, object> { ["Placeholder"] = "Placehoder" });
 
         public IActionResult Privacy()
         {
