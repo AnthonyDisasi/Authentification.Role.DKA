@@ -32,8 +32,8 @@ namespace Authentification.Role.DKA.Infrastructure
                     Description = "Password cannot contain numeric sequence"
                 });
             }
-            return Task.FromResult(errors.Count == 0 ?
-            IdentityResult.Success : IdentityResult.Failed(errors.ToArray()));
+
+            return errors.Count == 0 ? IdentityResult.Success : IdentityResult.Failed(errors.ToArray());
         }
     }
 }
