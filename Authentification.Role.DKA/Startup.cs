@@ -35,7 +35,7 @@ namespace Authentification.Role.DKA
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(this.Configuration.GetConnectionString("")));
+            services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(this.Configuration.GetConnectionString("DBUser")));
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
