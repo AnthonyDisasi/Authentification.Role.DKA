@@ -39,8 +39,14 @@ namespace Authentification.Role.DKA
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(this.Configuration.GetConnectionString("DBUser")));
             //services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
             services.AddTransient<IPasswordValidator<ApplicationUser>, CustomPasswordValidator>();
+
+            services.AddTransient<IUserValidator<ApplicationUser>, CustomUserValidator>();
+
             services.AddIdentity<ApplicationUser, IdentityRole>(opts =>
             {
+                opts.User.RequireUniqueEmail = true;
+                opts.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyz";
+
                 opts.Password.RequiredLength = 6;
                 opts.Password.RequireNonAlphanumeric = false;
                 opts.Password.RequireLowercase = false;
