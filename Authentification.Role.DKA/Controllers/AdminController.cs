@@ -20,6 +20,30 @@ namespace Authentification.Role.DKA.Controllers
 
         public ViewResult Create() => View();
 
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateModel model)
+        {
+            if(ModelState.IsValid)
+            {
+                ApplicationUser user = new ApplicationUser
+                {
+                    UserName = model.Name,
+                    Email = model.Email
+                };
+                IdentityResult result = await UserMana.CreateAsync(user, model.Password);
 
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                } else
+                {
+                    foreach(IdentityError error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+            }
+            return View(model);
+        }
     }
 }
