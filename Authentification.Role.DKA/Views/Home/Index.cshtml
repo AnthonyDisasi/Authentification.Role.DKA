@@ -1,8 +1,15 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model Dictionary<string, object>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="bg-primary panel-body">
+    <h4>Details sur les utilisateurs</h4>
 </div>
+
+<table class="table table-condensed table-bordered">
+    @foreach(var kvp in Model)
+    {
+        <tr>
+            <th>@kvp.Key</th>
+            <td>@kvp.Value</td>
+        </tr>
+    }
+</table>
